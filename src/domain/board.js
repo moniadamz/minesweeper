@@ -10,7 +10,7 @@ const setMinesPosition = (minesQty, rows, columns, cells) => {
     const posY = getRandomInt(0, columns);
 
     if (!cells[posX][posY].hasBomb) {
-      cells[posX][posY] = { hasBomb: true, isRevealed: false };
+      cells[posX][posY] = { hasBomb: true, isRevealed: false,  isFlagged: false};
       minesSet++;
     }
   }
@@ -22,6 +22,7 @@ const generateCells = (rowsQty, columnsQty, minesQty) => {
   const cellStructure = {
     hasBomb: false,
     isRevealed: false,
+    isFlagged: false
   };
   const rows = [];
 
@@ -82,37 +83,46 @@ const isSurroundedByBombs = (board, posX, posY, height, width) => {
   );
   return hasBomb;
 };
+const flagCell = (board, posX, posY) => {
+  const { hasBomb, isRevealed, isFlagged } = board[posX][posY];
+  if (!isFlagged && !isRevealed) {
+    board[posX][posY] = { hasBomb, isRevealed, isFlagged: true };
+  }
+  return board;
+};
 
 const revealCell = (board, posX, posY, height, width) => {
+  console.log(board);
+  const { hasBomb, isFlagged } = board[posX][posY];
   if (board[posX][posY].hasBomb) {
-    board[posX][posY] = { hasBomb: true, isRevealed: true };
+    board[posX][posY] = { hasBomb: true, isRevealed: true, isFlagged };
     return { board, message: "game over!" };
   }
+  const newAttributes = { hasBomb, isRevealed: true, isFlagged };
+  board[posX][posY] = newAttributes;
+  const haveBombsAround = isSurroundedByBombs(board, posX, posY);
 
-  board[posX][posY] = { hasBomb: false, isRevealed: true };
-  const hasBomb = isSurroundedByBombs(board, posX, posY);
-
-  if (!hasBomb.length) {
+  if (!haveBombsAround.length) {
     if (posY !== 0 && posX < height) {
-      board[posX][posY - 1] = { hasBomb: false, isRevealed: true };
-      board[posX - 1][posY - 1] = { hasBomb: false, isRevealed: true };
-      board[posX + 1][posY - 1] = { hasBomb: false, isRevealed: true };
+      board[posX][posY - 1] = newAttributes;
+      board[posX - 1][posY - 1] = newAttributes;
+      board[posX + 1][posY - 1] = newAttributes;
     }
 
     if (posX !== 0 && posY < width) {
-      board[posX - 1][posY] = { hasBomb: false, isRevealed: true };
-      board[posX - 1][posY + 1] = { hasBomb: false, isRevealed: true };
+      board[posX - 1][posY] = newAttributes;
+      board[posX - 1][posY + 1] = newAttributes;
     }
 
     if (posY < width) {
-      board[posX][posY + 1] = { hasBomb: false, isRevealed: true };
+      board[posX][posY + 1] = newAttributes;
     }
     if (posX < height) {
-      board[posX + 1][posY] = { hasBomb: false, isRevealed: true };
+      board[posX + 1][posY] = newAttributes;
     }
 
     if (posY < width && posX < height) {
-      board[posX + 1][posY + 1] = { hasBomb: false, isRevealed: true };
+      board[posX + 1][posY + 1] = newAttributes;
     }
   }
 
@@ -125,4 +135,5 @@ export {
   generateGame,
   isSurroundedByBombs,
   revealCell,
+  flagCell,
 };
