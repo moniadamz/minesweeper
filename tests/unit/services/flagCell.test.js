@@ -28,7 +28,7 @@ describe("Service - flag cell", () => {
   });
 
   it("should find a game, update cell and return the updated data", async () => {
-    const dbResult = { board: [] };
+    const dbResult = { board: [], rows: 6, columns: 4 };
     domainStub.returns({ some: "data" });
     findStub.resolves(dbResult);
     execStub.resolves(dbResult);
@@ -41,7 +41,7 @@ describe("Service - flag cell", () => {
   });
 
   it("should throw an error", async () => {
-    const dbResult = { board: [] };
+    const dbResult = { board: [], rows: 6, columns: 4 };
     domainStub.returns({ some: "data" });
     findStub.resolves(dbResult);
     execStub.rejects({ some: 'error' });
@@ -49,4 +49,13 @@ describe("Service - flag cell", () => {
       .flagCell("123465", 6, 2)
       .catch((e) => expect(e).to.eql({ some: 'error' }));
   });
+
+   it("should throw an error when param is invalid", async () => {
+     const dbResult = { board: [], rows: 6, columns: 5 };
+     domainStub.returns({ some: "data" });
+     findStub.resolves(dbResult);
+     await service
+       .flagCell("123465", 9, 2)
+       .catch((e) => expect(e).to.eql({ status: 400, message: "Row number exceeds the limit."}));
+   });
 });
