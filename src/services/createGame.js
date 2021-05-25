@@ -9,7 +9,7 @@ const save = async (board, rows, columns) => {
 
 const createGame = async (rows, columns, minesQty) => {
   const game = generateGame(rows, columns, minesQty);
-  const { _id } = await save(game);
+  const { _id } = await save(game, rows, columns);
   return _id;
 };
 

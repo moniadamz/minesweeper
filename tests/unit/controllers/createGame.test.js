@@ -19,7 +19,7 @@ describe('Controller - create game', () => {
         statusStub.returns({ json: jsonStub });
         res = { status: statusStub };
         req = {
-            params: {
+            body: {
                 rows: 5,
                 columns: 6,
                 minesQty: 2
