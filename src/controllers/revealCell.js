@@ -1,9 +1,13 @@
 import * as service from "../services/revealCell";
 
-const resumeGame = async (req, res) => {
+const revealCell = async (req, res, next) => {
+  try {
     const { row, column } = req.body;
-  const game = await service.revealCell(req.params.id, row, column);
-  return res.status(200).json({ game });
+    const game = await service.revealCell(req.params.id, row, column);
+    return res.status(200).json({ game });
+  } catch (error) {
+    next(error);
+  }
 };
 
-export default resumeGame;
+export default revealCell;

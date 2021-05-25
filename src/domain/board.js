@@ -22,7 +22,7 @@ const generateCells = (rowsQty, columnsQty, minesQty) => {
   const cellStructure = {
     hasBomb: false,
     isRevealed: false,
-    isFlagged: false
+    isFlagged: false,
   };
   const rows = [];
 
@@ -92,11 +92,10 @@ const flagCell = (board, posX, posY) => {
 };
 
 const revealCell = (board, posX, posY, height, width) => {
-  console.log(board);
   const { hasBomb, isFlagged } = board[posX][posY];
   if (board[posX][posY].hasBomb) {
     board[posX][posY] = { hasBomb: true, isRevealed: true, isFlagged };
-    return { board, message: "game over!" };
+    return { board, gameOver: true };
   }
   const newAttributes = { hasBomb, isRevealed: true, isFlagged };
   board[posX][posY] = newAttributes;
