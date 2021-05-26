@@ -4,8 +4,9 @@ import { findById } from "./findGame";
 import * as domain from "../domain/board";
 
 const revealCell = async (id, row, column) => {
-  const { board, rows: height, columns: width } = await findById(id);
+  const { board, rows: height, columns: width, endedAt } = await findById(id);
 
+  if (endedAt) throw { status: 400, message: "This game is already over." };
   if (row > height)
     throw { status: 400, message: "Row number exceeds the limit." };
   if (column > width)
